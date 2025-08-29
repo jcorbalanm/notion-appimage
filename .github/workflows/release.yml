@@ -26,15 +26,23 @@ jobs:
         with:
           path: build/app/dist/Notion-*.AppImage
 
-      - name: Get release version
+      - name: Get Notion release version
         run: fullpath=$(ls build/app/dist/Notion-*) && binary=${fullpath/'build/app/dist/Notion-'/} && echo "::set-output name=version::${binary/.AppImage/}"
         id: version
 
+      - name: Get latest GitHub release version
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          repository: ${{ github.repository }}
+        id: latest_release
+
       - name: Get current date
+        if: ${{ ! contains(steps.latest_release.outputs.release, steps.version.outputs.version) }}
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
       - name: Create release
+        if: ${{ ! contains(steps.latest_release.outputs.release, steps.version.outputs.version) }}
         uses: actions/create-release@v1
         id: create_release
         with:
@@ -46,9 +54,11 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Add x86_64 to AppImage
+        if: ${{ ! contains(steps.latest_release.outputs.release, steps.version.outputs.version) }}
         run: mv build/app/dist/Notion-${{ steps.version.outputs.version }}.AppImage build/app/dist/Notion-${{ steps.version.outputs.version }}-x86_64.AppImage
 
       - name: Upload AppImage
+        if: ${{ ! contains(steps.latest_release.outputs.release, steps.version.outputs.version) }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
