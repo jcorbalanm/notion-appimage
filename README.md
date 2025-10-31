@@ -1,3 +1,5 @@
+**Note:** This is just an up to date version of @kidonng Appimage. I just updated the GitHub Action and made it run every day for always up-to-date releases. I was unable to get this changes merged in the old repository, so i created this one as a standalone instead of a for so it appears on Google and GitHub searches.
+
 # Notion AppImage
 
 ![Screenshot](https://i.redd.it/vlp26kemu3wb1.png)
